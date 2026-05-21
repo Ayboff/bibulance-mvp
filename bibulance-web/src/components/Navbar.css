@@ -1,0 +1,24 @@
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 14px;
+}
+
+.navbar a {
+  color: #0b1020;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar a.active {
+  color: #5BF2F7;
+  font-weight: 700;
+}
