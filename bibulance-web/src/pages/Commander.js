@@ -278,27 +278,36 @@ if (form.ordered_for_someone) {
 
   console.log("Mission envoyée :", mission);
 
-  try {
-const response = await fetch("http://192.168.66.50:3001/missions/particulier", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(mission),
-});
+try {
+  const url = `${process.env.REACT_APP_API_URL}/missions/particulier`;
+  console.log("Envoi vers :", url, mission);
 
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(mission),
+  });
 
+  if (!response.ok) {
+    throw new Error("Erreur lors de l’envoi de la mission");
+  }
 
-    if (!response.ok) {
-      throw new Error("Erreur lors de l’envoi de la mission");
-    }
+  const createdMission = await response.json();
 
-    const createdMission = await response.json();
+  const missionId =
+    createdMission.id ||
+    `mobile-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-    const missionId =
-      createdMission.id ||
-      `mobile-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-
-    navigate("/mission-success", {
-      state: {
+  navigate("/mission-success", {
+    state: {
+      missionId,
+      estimatedPickup: form.estimated_pickup,
+    },
+  });
+} catch (error) {
+  console.error(error);
+  alert("Impossible d’envoyer la mission. Réessayez plus tard.");
+}
         missionId,
         estimatedPickup: form.estimated_pickup,
       },
