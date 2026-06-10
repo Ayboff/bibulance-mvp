@@ -105,7 +105,7 @@ const envoyerMissionsIteratives = async () => {
 
       console.log("MISSION ITÉRATIVE ENVOYÉE =", mission);
 
-      const res = await fetch("http://10.10.95.133:3001/missions/particulier", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/missions/particulier`, {
 
 
         method: "POST",
