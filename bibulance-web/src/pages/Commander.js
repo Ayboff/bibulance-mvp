@@ -308,14 +308,7 @@ try {
   console.error(error);
   alert("Impossible d’envoyer la mission. Réessayez plus tard.");
 }
-        missionId,
-        estimatedPickup: form.estimated_pickup,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    alert("Impossible d’envoyer la mission. Réessayez plus tard.");
-  }
+  
 };
 
 
