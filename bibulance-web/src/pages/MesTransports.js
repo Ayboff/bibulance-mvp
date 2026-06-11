@@ -35,7 +35,7 @@ export default function MesTransports() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/missions/particulier`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/missions`, {
 
 
           method: "GET",
