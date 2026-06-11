@@ -3,6 +3,8 @@ import HomePage from "./pages/HomePage";
 import StatsPage from "./pages/StatsPage";
 import ConfirmedPage from "./pages/ConfirmedPage";
 import { Home, ListChecks, CheckCircle, BarChart2, CalendarCheck, Siren, Clock, RefreshCw, Smartphone, CalendarDays, Search, ArrowRight, ArrowLeft, Repeat2 } from "lucide-react";
+import { io } from "socket.io-client";
+
 
 function safeDate(value) {
   if (!value) return null;
@@ -307,7 +309,7 @@ const formatTime = (sec) => {
   useEffect(() => {
   async function loadMissions() {
     try {
-      const missionsPlateformes = await fetch("http://10.10.95.133:3001/missions")
+      const missionsPlateformes = await fetch(`${process.env.REACT_APP_API_URL}/missions`)
 
   .then((r) => r.json())
   .then((list) =>
@@ -465,33 +467,33 @@ const formatTime = (sec) => {
 // 🔥 1) Chargement initial
 loadMissions();
 
-// 🔥 2) WebSocket temps réel (VERSION LOCALE)
-const ws = new WebSocket("ws://10.10.95.133:3001");
+
+// 🔥 2) WebSocket temps réel (VERSION SOCKET.IO)
 
 
-  ws.onopen = () => {
-    console.log("WebSocket connecté");
-  };
+const socket = io(process.env.REACT_APP_API_URL);
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log("Message reçu :", data);
+socket.on("connect", () => {
+  console.log("Socket.IO connecté :", socket.id);
+});
 
-    // Exemple : recharger les missions
-    if (data.type === "mission_created" || data.type === "mission_updated") {
+// Quand une mission est créée → recharger
+socket.on("mission_created", (mission) => {
+  console.log("Nouvelle mission :", mission);
   loadMissions();
-}
+});
 
-  };
+// Quand une mission est mise à jour → recharger
+socket.on("mission_updated", (data) => {
+  console.log("Mission mise à jour :", data);
+  loadMissions();
+});
 
-  ws.onerror = (err) => {
-    console.error("Erreur WebSocket :", err);
-  };
+return () => {
+  socket.disconnect();
+  console.log("Socket.IO déconnecté");
+};
 
-  return () => {
-    ws.close();
-    console.log("WebSocket fermé");
-  };
 }, []); // ← IMPORTANT : tableau vide pour éviter les connexions multiples
   const priorityOrder = {
     urgente: 0,
