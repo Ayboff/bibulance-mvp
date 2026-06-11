@@ -252,29 +252,36 @@ if (form.ordered_for_someone) {
   }
 }
 
-  // ✅ Construction de la mission EXACTEMENT comme attendue par le dashboard
-  const mission = {
-  // Patient transporté
-  firstname: form.ordered_for_someone ? form.patient_firstname : user.firstname,
-  lastname: form.ordered_for_someone ? form.patient_lastname : user.lastname,
-  phone: form.ordered_for_someone ? form.patient_phone : user.phone,
 
-  // Infos patient essentielles
-  patient_birthdate: form.patient_birthdate,
-  patient_social_security: form.patient_social_security,
+// ✅ Construction de la mission EXACTEMENT comme attendue par le backend
+const mission = {
+  id: `mobile-${Date.now()}`,
+  source_platform: "bibulance_mobile",
+  source_mission_id: Date.now().toString(),
+  status: "programmee",
 
-  // Trajet
-  depart_address: form.depart_address,
-  arrival_address: form.arrival_address,
-  date: form.date,
-  time: form.time,
-  transport_type: form.transport_type,
-  reason: form.reason === "Autre" ? form.reason_other : form.reason,
-  comment: form.comment,
+  rdv_time: `${form.date} ${form.time}`,
+  pec_estimated_time: null,
+
+  emitter_facility: form.depart_address,
+  destination_facility: form.arrival_address,
+  contract_required: 0,
+
+  patient_last_name: form.ordered_for_someone ? form.patient_lastname : user.lastname,
+  patient_first_name: form.ordered_for_someone ? form.patient_firstname : user.firstname,
+
+  vehicle_type: form.transport_type === "ambulance" ? "AMB" : "VSL",
+  care_type: form.reason === "Autre" ? form.reason_other : form.reason,
+  floor_info: null,
+
+  notes: JSON.stringify({
+    comment: form.comment || null,
+    patient_birthdate: form.patient_birthdate || null,
+    patient_social_security: form.patient_social_security || null,
+  }),
+
+  updated_at: new Date().toISOString(),
 };
-
-
-
 
   console.log("Mission envoyée :", mission);
 
